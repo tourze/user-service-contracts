@@ -21,7 +21,7 @@ class UserCounterInterfaceTest extends TestCase
     {
         $ref = new \ReflectionClass(UserCounterInterface::class);
         $this->assertTrue($ref->hasMethod('countAll'));
-        
+
         $method = $ref->getMethod('countAll');
         $this->assertTrue($method->hasReturnType());
         $this->assertSame('int', $method->getReturnType()->getName());
@@ -33,7 +33,7 @@ class UserCounterInterfaceTest extends TestCase
         $ref = new \ReflectionClass(UserCounterInterface::class);
         $method = $ref->getMethod('countAll');
         $docComment = $method->getDocComment();
-        
+
         $this->assertNotFalse($docComment);
         $this->assertStringContainsString('查找有效用户数', $docComment);
     }
