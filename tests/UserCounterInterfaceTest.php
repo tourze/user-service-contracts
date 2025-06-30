@@ -24,7 +24,9 @@ class UserCounterInterfaceTest extends TestCase
 
         $method = $ref->getMethod('countAll');
         $this->assertTrue($method->hasReturnType());
-        $this->assertSame('int', $method->getReturnType()->getName());
+        $returnType = $method->getReturnType();
+        $this->assertNotNull($returnType);
+        $this->assertSame('int', $returnType->__toString());
         $this->assertCount(0, $method->getParameters());
     }
 
@@ -51,7 +53,8 @@ class UserCounterInterfaceTest extends TestCase
         };
         
         $this->assertInstanceOf(UserCounterInterface::class, $mock);
-        $this->assertIsInt($mock->countAll());
+        $result = $mock->countAll();
+        $this->assertSame(0, $result);
     }
 
     /**
