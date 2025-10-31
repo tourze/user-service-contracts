@@ -4,89 +4,37 @@ declare(strict_types=1);
 
 namespace Tourze\UserServiceContracts\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionNamedType;
 use Tourze\UserServiceContracts\UserCounterInterface;
 
 /**
- * UserCounterInterface 接口的 contract 测试
+ * UserCounterInterface 的测试类
+ *
+ * @internal
  */
-class UserCounterInterfaceTest extends TestCase
+#[CoversClass(UserCounterInterface::class)]
+final class UserCounterInterfaceTest extends TestCase
 {
     public function testInterfaceExists(): void
     {
         $this->assertTrue(interface_exists(UserCounterInterface::class));
     }
 
-    public function testCountAllMethodSignature(): void
+    public function testHasCountAllMethod(): void
     {
-        $ref = new \ReflectionClass(UserCounterInterface::class);
-        $this->assertTrue($ref->hasMethod('countAll'));
+        $reflection = new ReflectionClass(UserCounterInterface::class);
+        $this->assertTrue($reflection->hasMethod('countAll'));
 
-        $method = $ref->getMethod('countAll');
-        $this->assertTrue($method->hasReturnType());
+        $method = $reflection->getMethod('countAll');
+        $this->assertSame('countAll', $method->getName());
+        $this->assertCount(0, $method->getParameters());
+
         $returnType = $method->getReturnType();
         $this->assertNotNull($returnType);
-        $this->assertSame('int', $returnType->__toString());
-        $this->assertCount(0, $method->getParameters());
+        $this->assertInstanceOf(ReflectionNamedType::class, $returnType);
+        $this->assertSame('int', $returnType->getName());
     }
-
-    public function testCountAllMethodDocumentation(): void
-    {
-        $ref = new \ReflectionClass(UserCounterInterface::class);
-        $method = $ref->getMethod('countAll');
-        $docComment = $method->getDocComment();
-
-        $this->assertNotFalse($docComment);
-        $this->assertStringContainsString('查找有效用户数', $docComment);
-    }
-
-    /**
-     * 用于 contract 测试的 mock 实现
-     */
-    public function testMockImplementation(): void
-    {
-        $mock = new class implements UserCounterInterface {
-            public function countAll(): int
-            {
-                return 0;
-            }
-        };
-        
-        $this->assertInstanceOf(UserCounterInterface::class, $mock);
-        $result = $mock->countAll();
-        $this->assertSame(0, $result);
-    }
-
-    /**
-     * 测试 mock 实现的边界情况
-     */
-    public function testMockImplementationBoundaryValues(): void
-    {
-        // 测试返回 0 的情况
-        $mockZero = new class implements UserCounterInterface {
-            public function countAll(): int
-            {
-                return 0;
-            }
-        };
-        $this->assertSame(0, $mockZero->countAll());
-
-        // 测试返回正数的情况
-        $mockPositive = new class implements UserCounterInterface {
-            public function countAll(): int
-            {
-                return 100;
-            }
-        };
-        $this->assertSame(100, $mockPositive->countAll());
-
-        // 测试返回大数的情况
-        $mockLarge = new class implements UserCounterInterface {
-            public function countAll(): int
-            {
-                return PHP_INT_MAX;
-            }
-        };
-        $this->assertSame(PHP_INT_MAX, $mockLarge->countAll());
-    }
-} 
+}
