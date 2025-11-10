@@ -38,20 +38,33 @@ final class UserManagerInterfaceTest extends TestCase
 
         $method = $reflection->getMethod('createUser');
         $this->assertSame('createUser', $method->getName());
-        $this->assertCount(3, $method->getParameters());
+        $this->assertCount(5, $method->getParameters());
 
         $parameters = $method->getParameters();
+
+        // 验证第一个参数：userIdentifier (string, 非空)
         $this->assertSame('userIdentifier', $parameters[0]->getName());
         $paramType = $parameters[0]->getType();
         $this->assertInstanceOf(ReflectionNamedType::class, $paramType);
         $this->assertSame('string', $paramType->getName());
         $this->assertFalse($parameters[0]->allowsNull());
 
+        // 验证第二个参数：nickName (string, 可空)
         $this->assertSame('nickName', $parameters[1]->getName());
         $this->assertTrue($parameters[1]->allowsNull());
 
+        // 验证第三个参数：avatarUrl (string, 可空)
         $this->assertSame('avatarUrl', $parameters[2]->getName());
         $this->assertTrue($parameters[2]->allowsNull());
+
+        // 验证第四个参数：password (string, 可空)
+        $this->assertSame('password', $parameters[3]->getName());
+        $this->assertTrue($parameters[3]->allowsNull());
+
+        // 验证第五个参数：roles (array, 默认空数组)
+        $this->assertSame('roles', $parameters[4]->getName());
+        $this->assertTrue($parameters[4]->isDefaultValueAvailable());
+        $this->assertSame([], $parameters[4]->getDefaultValue());
 
         $returnType = $method->getReturnType();
         $this->assertNotNull($returnType);

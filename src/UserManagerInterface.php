@@ -11,6 +11,8 @@ interface UserManagerInterface extends UserLoaderInterface
 {
     /**
      * 创建用户
+     *
+     * @param string[] $roles 用户角色列表
      */
     public function createUser(string $userIdentifier, ?string $nickName = null, ?string $avatarUrl = null, ?string $password = null, array $roles = []): UserInterface;
 
